@@ -1,6 +1,6 @@
 package com.enotesApiService.entity;
 
-import java.util.Date;
+import org.hibernate.annotations.AnyDiscriminatorImplicitValues.Strategy;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,5 +25,4 @@ public class Category extends BaseModel {
 	private String name;
 
 	private String description;
-
 }
