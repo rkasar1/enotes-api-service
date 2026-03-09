@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -64,6 +65,22 @@ public class GlobalExceptionHandler {
 	    return new ResponseEntity<>(exception.getErrors(), HttpStatus.BAD_REQUEST);
 	}
 
+
+
+	@ExceptionHandler(ExistsCategoryException.class)
+	public ResponseEntity<?> handleExistsCategoryException(ExistsCategoryException exception){
+	    
+	    return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
+	}
+
+	
+	
+
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception){
+	    
+	    return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+	}
 }
 
 

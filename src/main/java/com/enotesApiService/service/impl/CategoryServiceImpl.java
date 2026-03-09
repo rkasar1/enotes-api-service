@@ -12,6 +12,7 @@ import org.springframework.util.ObjectUtils;
 import com.enotesApiService.dto.CategoryDto;
 import com.enotesApiService.dto.CategoryResponse;
 import com.enotesApiService.entity.Category;
+import com.enotesApiService.exception.ExistsCategoryException;
 import com.enotesApiService.exception.ResourceNotFoundException;
 import com.enotesApiService.repository.CategoryRepository;
 import com.enotesApiService.service.CategoryService;
@@ -40,6 +41,10 @@ public class CategoryServiceImpl implements CategoryService {
 		 * category.setDescription(categoryDto.getDescription());
 		 * category.setIsActive(categoryDto.getIsActive());
 		 */
+		boolean existsByGetName = categoryRepository.existsByName(categoryDto.getName().trim());
+		if(existsByGetName) {
+			throw new ExistsCategoryException("Category exists");
+		}
 		validation.categoryValidation(categoryDto);
 		Category category = modelMapper.map(categoryDto, Category.class);
 		
