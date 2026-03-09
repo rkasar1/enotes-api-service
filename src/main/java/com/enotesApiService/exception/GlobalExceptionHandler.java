@@ -15,31 +15,30 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
+import com.enotesApiService.util.Commonutil;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException exception,WebRequest request){
-		
-		
-		ErrorDetails errorDetails=new ErrorDetails(new Date(),exception.getMessage(),request.getDescription(false));
-	return new ResponseEntity<>(errorDetails,HttpStatus.NOT_FOUND);
+	public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException exception) {
+
+		// ErrorDetails errorDetails = new ErrorDetails(new Date(),
+		// exception.getMessage(), request.getDescription(false));
+
+		return Commonutil.createErrorResponseMessage(exception.getMessage(), HttpStatus.NOT_FOUND);
+		// return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
 	}
 
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<?> handleGlobalException(Exception exception) {
 
+		return Commonutil.createErrorResponseMessage(exception.getMessage(), HttpStatus.NOT_FOUND);
+	}
+	// ErrorDetails errorDetails=new ErrorDetails(new
+	// Date(),exception.getMessage(),request.getDescription(false));
+	// return new ResponseEntity<>(errorDetails,HttpStatus.NOT_FOUND); }
 
-
-	/*
-	 * @ExceptionHandler(Exception.class) public ResponseEntity<?>
-	 * handleGlobalException(Exception exception,WebRequest request){
-	 * 
-	 * 
-	 * ErrorDetails errorDetails=new ErrorDetails(new
-	 * Date(),exception.getMessage(),request.getDescription(false)); return new
-	 * ResponseEntity<>(errorDetails,HttpStatus.NOT_FOUND); }
-	 */
-	
-	
 	/*
 	 * @ExceptionHandler(MethodArgumentNotValidException.class) public
 	 * ResponseEntity<?>
@@ -57,31 +56,25 @@ public class GlobalExceptionHandler {
 	 * Date(),exception.getMessage(),request.getDescription(false)); return new
 	 * ResponseEntity<>(error,HttpStatus.BAD_REQUEST); }
 	 */
-	
-	
+
 	@ExceptionHandler(ValidationException.class)
-	public ResponseEntity<?> handleValidationException(ValidationException exception){
-	    
-	    return new ResponseEntity<>(exception.getErrors(), HttpStatus.BAD_REQUEST);
+	public ResponseEntity<?> handleValidationException(ValidationException exception) {
+
+		return Commonutil.createErrorResponse(exception.getErrors(), HttpStatus.NOT_FOUND);
 	}
-
-
+	// return new ResponseEntity<>(exception.getErrors(), HttpStatus.BAD_REQUEST);
 
 	@ExceptionHandler(ExistsCategoryException.class)
-	public ResponseEntity<?> handleExistsCategoryException(ExistsCategoryException exception){
-	    
-	    return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
-	}
+	public ResponseEntity<?> handleExistsCategoryException(ExistsCategoryException exception) {
 
-	
-	
+		return Commonutil.createErrorResponseMessage(exception.getMessage(), HttpStatus.CONFLICT);
+		// return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
+	}
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception){
-	    
-	    return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+	public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
+
+		return Commonutil.createErrorResponseMessage(exception.getMessage(), HttpStatus.BAD_REQUEST);
+		// return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 }
-
-
-

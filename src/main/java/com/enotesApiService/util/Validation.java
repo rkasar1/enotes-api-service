@@ -24,8 +24,8 @@ public class Validation {
 			// validation name field
 			if (ObjectUtils.isEmpty(categoryDto.getName())) {
 				error.put("name", "name shouldnt be empty or null");
-			} else if ((categoryDto.getName().length() < 10)) {
-				error.put("name", "name length min 10");
+			} else if ((categoryDto.getName().length() < 3)) {
+				error.put("name", "name length min 3");
 			}
 			if (categoryDto.getName().length() > 10) {
 				error.put("name", "name length max 10");
