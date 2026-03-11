@@ -3,19 +3,21 @@ package com.enotesApiService.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.enotesApiService.dto.NotesDto;
+import com.enotesApiService.entity.FileDetails;
 import com.enotesApiService.service.NotesService;
 import com.enotesApiService.util.Commonutil;
 
@@ -36,6 +38,27 @@ public class NotesController {
 		}
 	}
 
+	
+	
+	
+	@GetMapping("/download/{id}")
+	public ResponseEntity<?> downloadNotes(@PathVariable Integer id) throws Exception {
+	
+		
+		FileDetails fileDetailes = notesService.getFileDetailes(id);
+		byte[] data=notesService.downloadFile(fileDetailes);
+		HttpHeaders  headers=new HttpHeaders();
+		String contentType = Commonutil.getContentType(fileDetailes.getOriginalFileName());
+		headers.setContentType(MediaType.parseMediaType(contentType));
+		headers.setContentDispositionFormData("attachment", fileDetailes.getOriginalFileName());
+		
+		return ResponseEntity.ok().headers(headers).body(data);
+		
+		
+	}
+
+	
+	
 	@GetMapping("/")
 	public ResponseEntity<?> getAllNotes() {
 		List<NotesDto> saveNotes = notesService.getAllNotes();

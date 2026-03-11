@@ -1,7 +1,10 @@
 package com.enotesApiService.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -12,8 +15,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.enotesApiService.dto.NotesDto;
@@ -117,6 +122,24 @@ public class NotesServiceimpl implements NotesService {
 
 	}
 
+	@Override
+	public FileDetails getFileDetailes(Integer id) throws ResourceNotFoundException {
+		// TODO Auto-generated method stub
+		FileDetails fileDetails=fileRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("file not found"));
+		
+		return fileDetails;
+	}
+
+	@Override
+	public byte[] downloadFile(FileDetails fileDetailes) throws Exception {
+		// TODO Auto-generated method stub
+		
+		InputStream io=new FileInputStream(fileDetailes.getPath());
+		return StreamUtils.copyToByteArray(io);
+		
+		
+	}
+
 	private String getDisplayFileName(String originalFilename) {
 
 		String extension = FilenameUtils.getExtension(originalFilename);
@@ -128,11 +151,7 @@ public class NotesServiceimpl implements NotesService {
 		return removeExtension;
 	}
 
-	private String getDisplayFileName(MultipartFile file) {
-		// TODO Auto-generated method stub
-
-		return null;
-	}
+	
 
 	private void checkedCategoryExits(CategoryDto dto) throws Exception {
 		// TODO Auto-generated method stub
