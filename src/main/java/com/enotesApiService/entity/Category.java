@@ -1,8 +1,10 @@
 package com.enotesApiService.entity;
 
 import org.hibernate.annotations.AnyDiscriminatorImplicitValues.Strategy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,6 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Category extends BaseModel {
 
 	@Id
@@ -25,4 +28,9 @@ public class Category extends BaseModel {
 	private String name;
 
 	private String description;
+	
+	private Boolean isActive;
+
+	private Boolean isDeleted;
+
 }
