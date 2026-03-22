@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.enotesApiService.dto.NotesDto;
 import com.enotesApiService.dto.NotesDto.CategoryDto;
+import com.enotesApiService.dto.NotesDto.FilesDto;
 import com.enotesApiService.entity.FileDetails;
 import com.enotesApiService.entity.Notes;
 import com.enotesApiService.exception.ResourceNotFoundException;
@@ -56,16 +57,24 @@ public class NotesServiceimpl implements NotesService {
 		// TODO Auto-generated method stub
 		// category validation
 		ObjectMapper ob = new ObjectMapper();
-		NotesDto notes = ob.readValue(notesdto, NotesDto.class);
+		NotesDto notesDto = ob.readValue(notesdto, NotesDto.class);
 
-		checkedCategoryExits(notes.getCategory());
+		/*
+		 * update notes if id is given from request
+		 */
 
-		Notes notesmap = mapper.map(notes, Notes.class);
+		if (!ObjectUtils.isEmpty(notesDto.getId())) {
+			updateNotes(file, notesDto);
+		}
+		checkedCategoryExits(notesDto.getCategory());
+
+		Notes notesmap = mapper.map(notesDto, Notes.class);
 
 		FileDetails filedetails = saveFileDetails(file);
 		if (!ObjectUtils.isEmpty(filedetails)) {
 			notesmap.setFileDetails(filedetails);
-		} else {
+		} else if (ObjectUtils.isEmpty(notesDto.getId())) {
+
 			notesmap.setFileDetails(null);
 		}
 
@@ -75,6 +84,16 @@ public class NotesServiceimpl implements NotesService {
 		}
 
 		return false;
+	}
+
+	private void updateNotes(MultipartFile file, NotesDto notesDto) throws Exception {
+		// TODO Auto-generated method stub
+		Notes existNotes = repo.findById(notesDto.getId())
+				.orElseThrow(() -> new ResourceNotFoundException("Not found"));
+
+		if (ObjectUtils.isEmpty(file)) {
+			notesDto.setFileDetails(mapper.map(existNotes.getFileDetails(), FilesDto.class));
+		}
 	}
 
 	private FileDetails saveFileDetails(MultipartFile file) throws Exception {
@@ -125,19 +144,19 @@ public class NotesServiceimpl implements NotesService {
 	@Override
 	public FileDetails getFileDetailes(Integer id) throws ResourceNotFoundException {
 		// TODO Auto-generated method stub
-		FileDetails fileDetails=fileRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("file not found"));
-		
+		FileDetails fileDetails = fileRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("file not found"));
+
 		return fileDetails;
 	}
 
 	@Override
 	public byte[] downloadFile(FileDetails fileDetailes) throws Exception {
 		// TODO Auto-generated method stub
-		
-		InputStream io=new FileInputStream(fileDetailes.getPath());
+
+		InputStream io = new FileInputStream(fileDetailes.getPath());
 		return StreamUtils.copyToByteArray(io);
-		
-		
+
 	}
 
 	private String getDisplayFileName(String originalFilename) {
@@ -150,8 +169,6 @@ public class NotesServiceimpl implements NotesService {
 		removeExtension = removeExtension + "." + extension;
 		return removeExtension;
 	}
-
-	
 
 	private void checkedCategoryExits(CategoryDto dto) throws Exception {
 		// TODO Auto-generated method stub
