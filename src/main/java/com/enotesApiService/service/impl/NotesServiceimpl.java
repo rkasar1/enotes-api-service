@@ -2,12 +2,11 @@ package com.enotesApiService.service.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +14,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StreamUtils;
@@ -58,7 +56,8 @@ public class NotesServiceimpl implements NotesService {
 		// category validation
 		ObjectMapper ob = new ObjectMapper();
 		NotesDto notesDto = ob.readValue(notesdto, NotesDto.class);
-
+		notesDto.setIsDeleted(false);
+		notesDto.setDeletedOn(null);
 		/*
 		 * update notes if id is given from request
 		 */
@@ -170,6 +169,15 @@ public class NotesServiceimpl implements NotesService {
 		return removeExtension;
 	}
 
+	@Override
+	public List<NotesDto> getUserRecycleBinNotes(Integer userId) {
+		// TODO Auto-generated method stub
+		
+	List<Notes> notes =	repo.findByCreatedByAndIsDeletedTrue(userId);
+	        List<NotesDto>notesDtolist = notes.stream().map(note->mapper.map(note, NotesDto.class)).toList();
+		return notesDtolist;
+	}
+
 	private void checkedCategoryExits(CategoryDto dto) throws Exception {
 		// TODO Auto-generated method stub
 		categoryRepo.findById(dto.getId()).orElseThrow(() -> new ResourceNotFoundException("Category invalid"));
@@ -179,6 +187,25 @@ public class NotesServiceimpl implements NotesService {
 	public List<NotesDto> getAllNotes() {
 		// TODO Auto-generated method stub
 		return repo.findAll().stream().map(notes -> mapper.map(notes, NotesDto.class)).toList();
+	}
+
+	@Override
+	public void deleteNotes(Integer id) throws Exception {
+		// TODO Auto-generated method stub
+		Notes notes = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found"));
+		notes.setIsDeleted(true);
+		notes.setDeletedOn(new Date());
+		repo.save(notes);
+	}
+
+	@Override
+	public void restoreNotes(Integer id) throws Exception {
+		// TODO Auto-generated method stub
+		Notes notes = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found"));
+
+		notes.setIsDeleted(false);
+		notes.setDeletedOn(null);
+		repo.save(notes);
 	}
 
 }

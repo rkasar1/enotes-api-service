@@ -22,12 +22,15 @@ public class NotesDto {
 	private String description;
 
 	private CategoryDto category;
-	
-	//private MultipartFile fsile;
-	
+
+	// private MultipartFile fsile;
+
 	private FilesDto fileDetails;
 
-	//private Boolean isDeleted;
+	// private Boolean isDeleted;
+	private Boolean isDeleted;
+
+	private Date deletedOn;
 
 	private Integer createdBy;
 
@@ -36,8 +39,7 @@ public class NotesDto {
 	private Integer updatedBy;
 
 	private Date updatedOn;
-	
-	
+
 	@Getter
 	@Setter
 	@AllArgsConstructor
@@ -50,7 +52,7 @@ public class NotesDto {
 		// @Max(value = 100)
 		private String originalFileName;
 
-	//	private String uploadFileName;
+		// private String uploadFileName;
 
 		private String displayFileName;
 
@@ -69,8 +71,7 @@ public class NotesDto {
 		private String name;
 
 	}
-	
-	
+
 	@Getter
 	@Setter
 	@AllArgsConstructor
@@ -83,10 +84,9 @@ public class NotesDto {
 		// @Max(value = 100)
 		private String originalFileName;
 
-	//	private String uploadFileName;
+		// private String uploadFileName;
 
 		private String displayFileName;
 
 	}
 }
-
