@@ -1,8 +1,7 @@
 package com.enotesApiService.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
-
-import com.enotesApiService.entity.FileDetails;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,10 +27,7 @@ public class NotesDto {
 	private FilesDto fileDetails;
 
 	// private Boolean isDeleted;
-	private Boolean isDeleted;
-
-	private Date deletedOn;
-
+	
 	private Integer createdBy;
 
 	private Date createdOn;
@@ -39,6 +35,11 @@ public class NotesDto {
 	private Integer updatedBy;
 
 	private Date updatedOn;
+	
+	private Boolean isDeleted;
+
+	 private LocalDateTime deletedOn;
+
 
 	@Getter
 	@Setter
