@@ -1,5 +1,6 @@
 package com.enotesApiService.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,7 @@ public interface NotesRepository extends JpaRepository<Notes, Integer> {
 
 //	List<Notes> findbyCreatedBy(Integer userId);
 	List<Notes> findByCreatedByAndIsDeletedTrue(Integer userId);
+
+	List<Notes> findAllByIsDeletedAndDeletedOnBefore(boolean b, LocalDateTime cutOffDate);
 
 }
